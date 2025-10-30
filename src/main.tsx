@@ -6,6 +6,10 @@ import App from './App.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 const queryClient = new QueryClient()
+console.log('Current environment:', import.meta.env.MODE);
+console.log('Is DEV:', import.meta.env.DEV);
+console.log('Is PROD:', import.meta.env.PROD);
+console.log('Vite env:', import.meta.env);
 async function setupMirage() {
   if (import.meta.env.DEV) {
     try {
