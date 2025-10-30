@@ -14,10 +14,5 @@ export default defineConfig({
   // Add this for SPA routing
   build: {
     outDir: 'dist',
-    rollupOptions: {
-      // Ensure proper handling of SPA routes
-    }
   },
-  // This ensures proper base path for deployment
-  base: './'
 })

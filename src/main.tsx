@@ -11,7 +11,7 @@ const queryClient = new QueryClient()
 async function setupMirage() {
     try {
       const { makeServer } = await import('./mirage/server')
-      makeServer({ environment: 'development' })
+      makeServer({ environment: 'development' })    
       console.log('✅ Mirage started')
     } catch (err) {
       console.error('❌ Mirage failed:', err)
