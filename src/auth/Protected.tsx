@@ -1,10 +1,12 @@
 import React, { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const Protected = ({ Component }: { Component: React.ReactNode }) => {
+   const navigate = useNavigate()
     useEffect(() => {
         const userType = JSON.parse(localStorage.getItem('currentUser') || '{}');
         if (userType?.role !== 'hr') {
-            window.location.href = '/login'; // Redirect to login if not HR user
+           navigate('/login');
         }
     }, [])
     return (
