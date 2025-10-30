@@ -1,20 +1,8 @@
-// components/FilterSidebar.tsx
 import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, X } from 'lucide-react'
-import type { JobFilters } from '@/types'
+import type { FilterSidebarProps } from '@/types'
 
-interface FilterSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  filters: JobFilters;
-  onFiltersChange: (filters: Partial<JobFilters>) => void;
-  onClearFilters: () => void;
-  isDark: boolean;
-  filterOptions: {
-    statuses: string[];
-    tags: string[];
-  };
-}
+
 
 function FilterSidebar({
   isOpen,
@@ -45,7 +33,6 @@ function FilterSidebar({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -54,8 +41,6 @@ function FilterSidebar({
             className="fixed inset-0 bg-black/50 z-40"
             onClick={onClose}
           />
-
-          {/* Sidebar */}
           <motion.div
             initial={{ x: 300 }}
             animate={{ x: 0 }}
@@ -103,8 +88,6 @@ function FilterSidebar({
                 <option value="createdAt_desc">Created (Oldest)</option>
               </select>
             </div>
-
-            {/* Status Filter */}
             <div className="mb-6">
               <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'
                 }`}>
@@ -145,8 +128,6 @@ function FilterSidebar({
                 ))}
               </div>
             </div>
-
-            {/* Tags Filter */}
             <div className="mb-6">
               <label className={`block text-sm font-medium mb-2 ${isDark ? 'text-gray-300' : 'text-gray-700'
                 }`}>
@@ -177,21 +158,19 @@ function FilterSidebar({
                 )}
               </div>
             </div>
-
-            {/* Clear Filters */}
             <button
               onClick={() => {
                 onFiltersChange({
                   status: undefined,
                   tags: undefined,
-                  sort: 'order', // Reset to default sort
-                  page: 1 // Reset to first page
+                  sort: 'order',
+                  page: 1
                 })
-                onClearFilters() // Call the parent clear function
+                onClearFilters()
                 onClose()
                 setTimeout(() => {
                   window.location.reload()
-                }, 100) // Close the sidebar
+                }, 100)
               }}
               className={`w-full py-2 px-4 rounded-lg font-medium transition-colors ${isDark
                 ? 'bg-gray-700 text-white hover:bg-gray-600'

@@ -1,4 +1,3 @@
-// services/candidateService.ts
 import type {
   CandidateProps,
   CandidatesResponse,

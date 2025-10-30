@@ -1,19 +1,11 @@
-// components/SortableJobCard.tsx
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { Archive, Edit3 } from 'lucide-react'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import type { JobProps } from '@/types'
+import type {SortableJobCardProps } from '@/types'
 
-interface SortableJobCardProps {
-    job: JobProps
-    isDark: boolean
-    gradientText: string
-    handleEditJob: (job: JobProps) => void
-    handleArchive: (id: string) => void
-    selectedJob: JobProps | null
-}
+
 
 export function SortableJobCard({
     job,

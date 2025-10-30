@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTheme } from '@/context/ThemeContext'
 import { assessmentService } from '@/services/assessmentService'
-import type { Assessment, AssessmentSection, Question, QuestionType } from '@/types'
+import type { Assessment, AssessmentBuilderProps, AssessmentSection, Question, QuestionType } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Plus, 
@@ -60,10 +60,7 @@ const QUESTION_TYPES: { type: QuestionType; label: string; icon: React.ReactNode
   },
 ]
 
-interface AssessmentBuilderProps {
-  jobId: string
-}
- 
+
 function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
 
   const { id } = useParams<{ id: string }>()

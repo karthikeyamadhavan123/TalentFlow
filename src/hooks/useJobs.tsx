@@ -12,7 +12,6 @@ export function useJobs(initialFilters: JobFilters = {}) {
   const isInitialMount = useRef(true)
   const isSyncingToUrl = useRef(false)
 
-  // Keep filters in local state for instant updates
   const [localFilters, setLocalFilters] = useState<JobFilters>(() => {
     const paramsObj: Record<string, any> = {}
     for (const [key, value] of searchParams.entries()) {
@@ -33,7 +32,6 @@ export function useJobs(initialFilters: JobFilters = {}) {
     }
   })
 
-  // React Query for data fetching
   const {
     data = {
       jobs: [],
@@ -53,7 +51,6 @@ export function useJobs(initialFilters: JobFilters = {}) {
     gcTime: 5 * 60 * 1000,
   })
 
-  // 🔄 Sync local filters to URL
   useEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false
@@ -81,7 +78,6 @@ export function useJobs(initialFilters: JobFilters = {}) {
     }, 50)
   }, [localFilters, setSearchParams])
 
-  // 📦 Handle browser back/forward navigation ONLY
   useEffect(() => {
     if (isSyncingToUrl.current) {
       return
@@ -104,13 +100,11 @@ export function useJobs(initialFilters: JobFilters = {}) {
       }
     }
 
-    // Only update if filters actually changed
     if (JSON.stringify(newFilters) !== JSON.stringify(localFilters)) {
       setLocalFilters(newFilters)
     }
   }, [searchParams, initialFilters])
 
-  // Prefetch next page for instant navigation
   const prefetchNextPage = useCallback((nextPage: number) => {
     const nextFilters = { ...localFilters, page: nextPage }
     queryClient.prefetchQuery({
@@ -125,7 +119,6 @@ export function useJobs(initialFilters: JobFilters = {}) {
       const updated = {
         ...prev,
         ...newFilters,
-        // Reset to page 1 for filter changes (not page changes)
         page: newFilters.page !== undefined ? newFilters.page :
           (newFilters.search !== undefined ||
             newFilters.status !== undefined ||
@@ -135,20 +128,16 @@ export function useJobs(initialFilters: JobFilters = {}) {
       return updated
     })
 
-    // Prefetch next page when changing pages
     if (newFilters.page && newFilters.page > 1) {
       prefetchNextPage(newFilters.page + 1)
     }
   }, [prefetchNextPage])
 
  const goToPage = useCallback(async (page: number) => {
-  // Update local filters
   setLocalFilters(prev => ({ ...prev, page }))
 
-  // Force a refetch to always get latest data (especially when going back)
   await queryClient.invalidateQueries({ queryKey: [JOBS_QUERY_KEY] })
 
-  // Prefetch nearby pages for smoother experience
   if (page > 1) {
     prefetchNextPage(page - 1)
   }
@@ -165,20 +154,16 @@ export function useJobs(initialFilters: JobFilters = {}) {
       status: undefined,
       tags: undefined,
     }
-    // ✅ Reset filters to defaults first
     setLocalFilters(defaultFilters)
 
-    // ✅ Clear URL parameters by setting empty search params
     setSearchParams(new URLSearchParams(), { replace: true })
 
-    // ✅ Clear all cached queries
     await queryClient.invalidateQueries({ queryKey: [JOBS_QUERY_KEY] })
 
 
     await queryRefetch()
   }, [queryClient, queryRefetch])
 
-  // Manual refetch
   const manualRefetch = useCallback(() => {
     queryClient.invalidateQueries({ queryKey: [JOBS_QUERY_KEY] })
   }, [queryClient])

@@ -1,4 +1,3 @@
-// services/jobService.ts
 import type { JobFilters, JobsResponse, CreateJobData, UpdateJobData } from '@/types'
 import { simulateError } from '@/utils/helper'
 

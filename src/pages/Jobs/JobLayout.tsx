@@ -7,9 +7,6 @@ import AppSidebar from "./components/AppSideBar"
 const JobLayout = () => {
   const { isDark } = useTheme()
 
-  const gradientText = isDark
-    ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text"
-    : "bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text"
 
   return (
     <div className={`min-h-screen flex flex-col md:flex-row ${isDark ? "dark bg-gray-900" : "bg-background"}`}>

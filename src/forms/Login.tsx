@@ -36,8 +36,6 @@ const Login = () => {
       );
       if (user) {
         localStorage.setItem('currentUser', JSON.stringify(user));
-
-        //simulating an api requsest delay using promise 
         setTimeout(() => {
           navigate('/jobs');
           setLoading(false);

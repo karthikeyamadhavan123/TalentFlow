@@ -28,7 +28,6 @@ const Signup = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Signup data:', formData);
-    // Handle signup logic here
   };
 
   return (

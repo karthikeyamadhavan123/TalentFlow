@@ -1,4 +1,3 @@
-// components/JobsGrid.tsx
 import {
     DndContext,
     closestCenter,
@@ -15,17 +14,9 @@ import {
     rectSortingStrategy,
 } from '@dnd-kit/sortable'
 import { SortableJobCard } from './SortableJobCard'
-import type { JobProps } from '@/types'
+import type {JobsGridProps } from '@/types'
 
-interface JobsGridProps {
-    jobs: JobProps[]
-    isDark: boolean
-    gradientText: string
-    handleEditJob: (job: JobProps) => void
-    handleArchive: (id: string) => void
-    selectedJob: JobProps | null
-    onReorder: (activeId: string, oldIndex: number, newIndex: number) => Promise<void>
-}
+
 
 export function JobsGrid({
     jobs,

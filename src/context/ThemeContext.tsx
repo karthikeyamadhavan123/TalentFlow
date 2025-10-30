@@ -1,10 +1,8 @@
+import type { ThemeContextType } from '@/types';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 
-interface ThemeContextType {
-  isDark: boolean;
-  toggleTheme: () => void;
-}
+
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -12,7 +10,6 @@ export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
-    // Check if user has a theme preference in localStorage
     const savedTheme = localStorage.getItem('theme');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     

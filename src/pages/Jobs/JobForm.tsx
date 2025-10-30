@@ -1,4 +1,3 @@
-// components/JobForm.tsx
 import { motion } from 'framer-motion'
 import { X, Plus, Minus } from 'lucide-react'
 import { useState, useEffect } from 'react'

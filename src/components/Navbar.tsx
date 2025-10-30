@@ -21,7 +21,7 @@ const Navbar = () => {
 
     return (
         <>
-            {/* Scroll Indicator */}
+
             <motion.div
                 className="fixed top-0 left-0 right-0 h-1 origin-left z-50"
                 style={{
@@ -33,7 +33,7 @@ const Navbar = () => {
             <nav className={`fixed top-0 left-0 right-0 z-40 ${isDark ? 'bg-gray-900/80' : 'bg-white/80'} backdrop-blur-md border-b ${isDark ? 'border-gray-800' : 'border-gray-200'} transition-all duration-300`}>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-16">
-                        {/* Logo */}
+
                         <motion.div
                             initial={{ x: -50, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
@@ -48,7 +48,6 @@ const Navbar = () => {
                             </Link>
                         </motion.div>
 
-                        {/* Desktop Navigation Links */}
                         <motion.div
                             className="hidden md:flex items-center space-x-1"
                             variants={containerVariants}
@@ -68,9 +67,9 @@ const Navbar = () => {
                             ))}
                         </motion.div>
 
-                        {/* Right side buttons */}
+
                         <div className="flex items-center space-x-3">
-                            {/* Theme Toggle */}
+
                             <motion.button
                                 onClick={toggleTheme}
                                 whileTap={{ scale: 0.8, rotate: isDark ? 0 : 360 }}
@@ -81,7 +80,6 @@ const Navbar = () => {
                                 {isDark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
                             </motion.button>
 
-                            {/* Desktop Buttons */}
                             <motion.div
                                 className="hidden md:flex items-center space-x-3"
                                 variants={containerVariants}
@@ -111,7 +109,6 @@ const Navbar = () => {
                                 </motion.div>
                             </motion.div>
 
-                            {/* Mobile menu button */}
                             <motion.button
                                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                                 whileTap={{ scale: 0.9 }}
@@ -124,7 +121,6 @@ const Navbar = () => {
                     </div>
                 </div>
 
-                {/* Mobile Menu */}
                 <motion.div
                     initial={false}
                     animate={isMobileMenuOpen ? "open" : "closed"}

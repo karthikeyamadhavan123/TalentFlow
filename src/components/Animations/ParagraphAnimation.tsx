@@ -10,7 +10,7 @@ const ParagraphAnimation = ({ text, color, words, isDark }: { text: string, colo
             setIndex((prevIndex) => (prevIndex + 1) % words.length);
         }, 2000);
         return () => clearInterval(interval);
-    }, [index]); // Fixed dependency array
+    }, [index]); 
 
     return (
         <p className={`${color} text-xl md:text-2xl leading-relaxed`}>

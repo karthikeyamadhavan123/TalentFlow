@@ -31,8 +31,6 @@ ChartJS.register(
 
 const MarketInsights = () => {
   const { isDark } = useTheme();
-
-  // Bar Chart Data - Hiring Trends by Role
   const hiringTrendsData = {
     labels: ['Engineering', 'Product', 'Marketing', 'Sales', 'Design'],
     datasets: [
@@ -48,7 +46,6 @@ const MarketInsights = () => {
     ],
   };
 
-  // Line Chart Data - Application Trends
   const applicationTrendsData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
@@ -65,7 +62,6 @@ const MarketInsights = () => {
     ],
   };
 
-  // Doughnut Chart Data - Candidate Sources
   const candidateSourcesData = {
     labels: ['LinkedIn', 'Referrals', 'Job Boards', 'Direct Apply', 'Agencies'],
     datasets: [
@@ -119,7 +115,7 @@ const MarketInsights = () => {
   return (
     <section className="py-20 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header */}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -133,7 +129,7 @@ const MarketInsights = () => {
           </p>
         </motion.div>
 
-        {/* Quick Stats */}
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {quickStats.map((stat, index) => (
             <motion.div
@@ -159,9 +155,9 @@ const MarketInsights = () => {
           ))}
         </div>
 
-        {/* Charts Grid */}
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-          {/* Hiring Trends Bar Chart */}
+
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -173,7 +169,7 @@ const MarketInsights = () => {
             <Bar data={hiringTrendsData} options={chartOptions('bar')} />
           </motion.div>
 
-          {/* Application Trends Line Chart */}
+
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -186,7 +182,7 @@ const MarketInsights = () => {
           </motion.div>
         </div>
 
-        {/* Bottom Row - Doughnut Chart */}
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -200,7 +196,6 @@ const MarketInsights = () => {
           </div>
         </motion.div>
 
-        {/* Trending Skills */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

@@ -1,4 +1,3 @@
-// components/JobBoard.tsx
 import { motion } from 'framer-motion'
 import { useJobs } from '@/hooks/useJobs'
 import { useTheme } from '@/context/ThemeContext'

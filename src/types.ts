@@ -6,18 +6,18 @@ export interface menuItemProps {
 
 
 export interface JobProps {
-  id: string,              // Unique identifier (UUID or auto-increment)
-  title: string,           // Job title (required)
-  slug: string,            // URL-friendly unique identifier (required, unique)
-  status: string,          // "active" | "archived"
-  tags: Array<string>,     // Array of tag strings (e.g., ["Frontend", "Remote", "Senior"])
-  order: number,           // For drag-and-drop ordering (lower = higher in list)
-  description: string,     // Job description (optional, good to have)
-  department: string,      // Department (optional, e.g., "Engineering", "Marketing")
-  location: string,        // Location (optional, e.g., "Remote", "New York")
-  createdAt: Date,         // Timestamp when job was created
+  id: string,             
+  title: string,           
+  slug: string,           
+  status: string,         
+  tags: Array<string>,     
+  order: number,           
+  description: string,     
+  department: string,     
+  location: string,       
+  createdAt: Date,        
   updatedAt: Date
-  isArchived: boolean
+  isArchived?: boolean
 }
 
 export interface JobsResponse {
@@ -75,7 +75,6 @@ export interface SearchModalProps {
   isDark: boolean;
 }
 
-// types/index.ts
 export interface JobFilters {
   search?: string;
   status?: string;
@@ -144,7 +143,6 @@ export interface CandidateStats {
 }
 
 
-// types/assessment.ts
 export type QuestionType =
   | 'single-choice'
   | 'multi-choice'
@@ -159,13 +157,13 @@ export interface Question {
   question: string
   description?: string
   required: boolean
-  options?: string[] // For single/multi choice
-  min?: number // For numeric range
-  max?: number // For numeric range
-  maxLength?: number // For text fields
+  options?: string[]
+  min?: number 
+  max?: number 
+  maxLength?: number 
   conditional?: {
-    dependsOn: string // Question ID
-    condition: string // Value that triggers this question
+    dependsOn: string 
+    condition: string 
   }
 }
 
@@ -193,4 +191,54 @@ export interface CandidateResponse {
     [questionId: string]: string | string[] | number | File
   }
   submittedAt?: string
+}
+
+
+export interface AnimationProps {
+  text: string;
+  color: string;
+  highlightWord?: string;
+  highlightClass?: string;
+}
+
+export interface FilterSidebarProps {
+  isOpen: boolean;
+  onClose: () => void;
+  filters: JobFilters;
+  onFiltersChange: (filters: Partial<JobFilters>) => void;
+  onClearFilters: () => void;
+  isDark: boolean;
+  filterOptions: {
+    statuses: string[];
+    tags: string[];
+  };
+}
+
+export interface ThemeContextType {
+  isDark: boolean;
+  toggleTheme: () => void;
+}
+
+export interface AssessmentBuilderProps {
+  jobId: string
+}
+
+export interface JobsGridProps {
+    jobs: JobProps[]
+    isDark: boolean
+    gradientText: string
+    handleEditJob: (job: JobProps) => void
+    handleArchive: (id: string) => void
+    selectedJob: JobProps | null
+    onReorder: (activeId: string, oldIndex: number, newIndex: number) => Promise<void>
+    isLoading?: boolean
+}
+ 
+export interface SortableJobCardProps {
+    job: JobProps
+    isDark: boolean
+    gradientText: string
+    handleEditJob: (job: JobProps) => void
+    handleArchive: (id: string) => void
+    selectedJob: JobProps | null
 }

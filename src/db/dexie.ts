@@ -5,7 +5,7 @@ const db = new Dexie('jobPortal') as Dexie & {
     jobs: EntityTable<JobProps, 'id'>;
     candidates: EntityTable<CandidateProps, 'id'>;
     assessments: EntityTable<Assessment, 'id'>;
-    candidateResponses: EntityTable<CandidateResponse & { id?: string }, 'id'>; // primary key "id" (for the typings only)
+    candidateResponses: EntityTable<CandidateResponse & { id?: string }, 'id'>; 
 }
 db.version(2).stores({
     jobs: '++id, title, slug, status, order, createdAt',

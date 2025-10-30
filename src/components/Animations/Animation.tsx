@@ -1,3 +1,4 @@
+import type { AnimationProps } from "@/types";
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
@@ -6,12 +7,7 @@ const Animation = ({
   color,
   highlightWord,
   highlightClass,
-}: {
-  text: string;
-  color: string;
-  highlightWord?: string;
-  highlightClass?: string;
-}) => {
+}: AnimationProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false });
   const [key, setKey] = useState(0);
@@ -45,7 +41,7 @@ const Animation = ({
             {chars.map((char) => {
               const delay =
                 char === " "
-                  ? charIndex * 0.1 + 0.2 
+                  ? charIndex * 0.1 + 0.2
                   : charIndex * 0.15;
               const currentCharIndex = charIndex;
               charIndex++;

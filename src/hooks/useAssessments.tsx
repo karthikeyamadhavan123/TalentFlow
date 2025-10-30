@@ -1,4 +1,3 @@
-// hooks/useAssessments.ts
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { assessmentService } from '@/services/assessmentService';
 import type { Assessment, CandidateResponse } from '@/types';

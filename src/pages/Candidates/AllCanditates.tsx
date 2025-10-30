@@ -42,22 +42,19 @@ function Candidates() {
 
   const { data: stats } = useCandidateStats()
 
-  // Debounced search - update filters when user stops typing
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value)
-    
-    // Clear existing timeout
+
     if (searchTimeoutRef.current) {
       clearTimeout(searchTimeoutRef.current)
     }
-    
-    // Set new timeout
+
     searchTimeoutRef.current = setTimeout(() => {
       setFilters(prev => ({ ...prev, search: value }))
     }, 500)
   }, [])
 
-  // Cleanup timeout on unmount
+
   useEffect(() => {
     return () => {
       if (searchTimeoutRef.current) {
@@ -66,25 +63,21 @@ function Candidates() {
     }
   }, [])
 
-  // Flatten all candidates from all pages
   const allCandidates = useMemo(() => {
     return data?.pages.flatMap(page => page.candidates) || []
   }, [data?.pages])
 
   const totalCount = data?.pages[0]?.totalCount || 0
 
-  // Improved infinite scroll observer with proper cleanup
   const lastCandidateRef = useCallback(
     (node: HTMLDivElement | null) => {
-      // Disconnect previous observer
+
       if (observerRef.current) {
         observerRef.current.disconnect()
       }
 
-      // Don't observe if loading or no more pages
       if (isFetchingNextPage || !hasNextPage) return
 
-      // Create new observer
       observerRef.current = new IntersectionObserver(
         (entries) => {
           if (entries[0].isIntersecting) {
@@ -93,11 +86,9 @@ function Candidates() {
         },
         { 
           threshold: 0.1,
-          rootMargin: '100px' // Start loading before reaching the end
+          rootMargin: '100px' 
         }
       )
-
-      // Observe the node
       if (node) {
         observerRef.current.observe(node)
       }

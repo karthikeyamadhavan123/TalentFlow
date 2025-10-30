@@ -1,69 +1,8 @@
+import { departments, generalTags, jobTitles, locations, techTags } from '@/utils/data';
 import { db } from './dexie';
 import type { JobProps } from '@/types';
 
-const departments = [
-  'Engineering',
-  'Marketing',
-  'Sales',
-  'Product',
-  'Design',
-  'HR',
-  'Finance',
-  'Operations'
-];
 
-const locations = [
-  'Remote',
-  'New York, NY',
-  'San Francisco, CA',
-  'Austin, TX',
-  'Seattle, WA',
-  'Boston, MA',
-  'Chicago, IL',
-  'Los Angeles, CA',
-  'Denver, CO',
-  'Hybrid - US'
-];
-
-const jobTitles = [
-  'Senior Frontend Developer',
-  'Backend Engineer',
-  'Full Stack Developer',
-  'DevOps Engineer',
-  'Product Manager',
-  'UX Designer',
-  'UI Designer',
-  'Marketing Manager',
-  'Sales Development Representative',
-  'Account Executive',
-  'Data Analyst',
-  'Machine Learning Engineer',
-  'QA Engineer',
-  'Technical Writer',
-  'Customer Success Manager',
-  'HR Business Partner',
-  'Financial Analyst',
-  'Operations Manager',
-  'Content Writer',
-  'Social Media Manager',
-  'Brand Designer',
-  'Growth Marketing Lead',
-  'Engineering Manager',
-  'Recruiter',
-  'Executive Assistant'
-];
-
-const techTags = [
-  'React', 'TypeScript', 'Node.js', 'Python', 'Java', 'AWS',
-  'Docker', 'Kubernetes', 'GraphQL', 'PostgreSQL', 'MongoDB',
-  'Vue.js', 'Angular', 'Go', 'Rust', 'Ruby', 'Rails'
-];
-
-const generalTags = [
-  'Remote', 'Full-time', 'Part-time', 'Contract', 'Senior',
-  'Junior', 'Mid-level', 'Leadership', 'IC', 'B2B', 'B2C',
-  'Startup', 'Enterprise', 'SaaS'
-];
 
 const allTags = [...techTags, ...generalTags];
 

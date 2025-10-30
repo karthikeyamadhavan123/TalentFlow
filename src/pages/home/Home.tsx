@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import Navbar from '@/components/Navbar';
 import Hero from './Hero';
-import MarketInsights from '@/components/MarketInsights'; // Import the new component
+import MarketInsights from '@/components/MarketInsights'; 
 import Jobs from './Jobs';
 import Footer from '@/components/Footer';
 import { useTheme } from '@/context/ThemeContext';

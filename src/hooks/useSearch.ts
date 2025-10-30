@@ -1,4 +1,4 @@
-// hooks/useSearch.ts
+
 import { useState, useEffect } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { jobService } from '@/services/jobService'
@@ -13,7 +13,7 @@ export function useSearch() {
       return jobService.getJobById(selectedJobId)
     },
     enabled: !!selectedJobId,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 5 * 60 * 1000, 
   })
 
   useEffect(() => {
@@ -35,7 +35,7 @@ export function useSearch() {
     params.set('jobId', jobId)
     const newUrl = `${window.location.pathname}?${params.toString()}`
     window.history.pushState({}, '', newUrl)
-    setIsOpen(false) // Close search modal after selection
+    setIsOpen(false)
   }
 
   const handleClose = () => {
@@ -44,7 +44,7 @@ export function useSearch() {
 
   const clearSelectedJob = () => {
     setSelectedJobId(null)
-    // Remove jobId from URL
+
     const params = new URLSearchParams(window.location.search)
     params.delete('jobId')
     const newUrl = `${window.location.pathname}?${params.toString()}`
