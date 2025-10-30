@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { useTheme } from '@/context/ThemeContext'
 import { assessmentService } from '@/services/assessmentService'
-import type { Assessment, AssessmentBuilderProps, AssessmentSection, Question, QuestionType } from '@/types'
+import type { Assessment, AssessmentSection, Question, QuestionType } from '@/types'
 import { motion, AnimatePresence } from 'framer-motion'
 import { 
   Plus, 
@@ -19,7 +19,8 @@ import {
   Upload
 } from 'lucide-react'
 import LoadingAnimation from '@/components/Animations/LoadingAnimation'
-import QuestionInput from './QuestionInput'
+import QuestionBuilder from './QuestionBuilder' // You'll need to create this or fix the inline component
+import AssessmentPreview from './AssessmentPreview' // You'll need to create this
 
 const QUESTION_TYPES: { type: QuestionType; label: string; icon: React.ReactNode; description: string }[] = [
   { 
@@ -60,9 +61,7 @@ const QUESTION_TYPES: { type: QuestionType; label: string; icon: React.ReactNode
   },
 ]
 
-
-function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
-
+function AssessmentBuilder() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
   const { isDark } = useTheme()
@@ -85,22 +84,8 @@ function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
           const assessmentData = await assessmentService.getAssessment(id)
           setAssessment(assessmentData)
         } else {
-          // Creating new assessment for job
-          const assessmentData = await assessmentService.getAssessmentByJobId(jobId)
-          if (assessmentData) {
-            setAssessment(assessmentData)
-          } else {
-            // Create a new assessment structure
-            setAssessment({
-              id: `assessment-${Date.now()}`,
-              jobId,
-              title: 'New Assessment',
-              description: '',
-              sections: [],
-              createdAt: new Date().toISOString(),
-              updatedAt: new Date().toISOString(),
-            })
-          }
+          // This shouldn't happen since we always have an id from the route
+          setError('No assessment ID provided')
         }
       } catch (err) {
         console.error('Error fetching assessment:', err)
@@ -111,7 +96,7 @@ function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
     }
 
     fetchAssessment()
-  }, [id, jobId])
+  }, [id]) // Remove jobId dependency
 
   const saveAssessment = async () => {
     if (!assessment) return
@@ -129,8 +114,12 @@ function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
       // Save draft locally
       assessmentService.saveDraftAssessment(assessment)
       
-      // Navigate back to job detail
-      navigate(`/jobs/${jobId}`)
+      // Navigate back to job detail - use the jobId from assessment
+      if (assessment.jobId) {
+        navigate(`/jobs/${assessment.jobId}`)
+      } else {
+        navigate('/jobs')
+      }
     } catch (err) {
       console.error('Error saving assessment:', err)
       setError('Failed to save assessment')
@@ -368,7 +357,7 @@ function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
           <div className="flex items-center gap-4">
             <button
-              onClick={() => navigate(`/jobs/${id ? assessment.jobId : id} `)}
+              onClick={() => navigate(assessment.jobId ? `/jobs/${assessment.jobId}` : '/jobs')}
               className={`p-2 rounded-lg transition-colors ${
                 isDark ? 'hover:bg-gray-800' : 'hover:bg-gray-200'
               }`}
@@ -581,410 +570,4 @@ function AssessmentBuilder({ jobId }: AssessmentBuilderProps) {
   )
 }
 
-// Question Builder Component
-function QuestionBuilder({ 
-  question, 
-  allQuestions,
-  onUpdate, 
-  onDelete,
-  onAddOption,
-  onUpdateOption,
-  onDeleteOption,
-  onAddConditional,
-  onRemoveConditional,
-  isDark 
-}: {
-  question: Question
-  section: AssessmentSection
-  allQuestions: Question[]
-  onUpdate: (updates: Partial<Question>) => void
-  onDelete: () => void
-  onAddOption: () => void
-  onUpdateOption: (index: number, value: string) => void
-  onDeleteOption: (index: number) => void
-  onAddConditional: (dependsOn: string, condition: string) => void
-  onRemoveConditional: () => void
-  isDark: boolean
-}) {
-  const [showConditional, setShowConditional] = useState(false)
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.95 }}
-      className={`p-4 rounded-lg border ${
-        isDark ? 'bg-black border-gray-800' : 'bg-white border-gray-200'
-      }`}
-    >
-      {/* Question Header */}
-      <div className="flex items-center gap-3 mb-3">
-        <GripVertical className={isDark ? 'text-gray-600' : 'text-gray-400'} />
-        <input
-          type="text"
-          value={question.question}
-          onChange={(e) => onUpdate({ question: e.target.value })}
-          className={`flex-1 p-2 rounded-lg font-medium border ${
-            isDark
-              ? 'bg-black border-gray-700 text-white'
-              : 'bg-white border-gray-300 text-gray-900'
-          }`}
-          placeholder="Question text"
-        />
-        <select
-          value={question.type}
-          onChange={(e) => onUpdate({ type: e.target.value as QuestionType })}
-          className={`px-3 py-2 rounded-lg border ${
-            isDark
-              ? 'bg-black border-gray-700 text-white'
-              : 'bg-white border-gray-300 text-gray-900'
-          }`}
-        >
-          {QUESTION_TYPES.map(({ type, label }) => (
-            <option key={type} value={type}>
-              {label}
-            </option>
-          ))}
-        </select>
-        <button
-          onClick={onDelete}
-          className="p-2 text-red-500 hover:bg-red-500 hover:text-white rounded-lg transition-colors"
-        >
-          <Trash2 size={16} />
-        </button>
-      </div>
-
-      {/* Question Configuration */}
-      <div className="space-y-3 ml-8">
-        {/* Description */}
-        <input
-          type="text"
-          value={question.description || ''}
-          onChange={(e) => onUpdate({ description: e.target.value })}
-          placeholder="Description (optional)"
-          className={`w-full p-2 rounded-lg text-sm border ${
-            isDark
-              ? 'bg-black border-gray-700 text-white placeholder-gray-400'
-              : 'bg-white border-gray-300 text-gray-900 placeholder-gray-500'
-          }`}
-        />
-
-        {/* Required Toggle */}
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={question.required}
-            onChange={(e) => onUpdate({ required: e.target.checked })}
-            className="rounded"
-          />
-          <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-            Required question
-          </span>
-        </label>
-
-        {/* Options for Choice Questions */}
-        {(question.type === 'single-choice' || question.type === 'multi-choice') && (
-          <div className="space-y-2">
-            <div className="flex justify-between items-center">
-              <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                Options
-              </span>
-              <button
-                onClick={onAddOption}
-                className="flex items-center gap-1 px-2 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
-              >
-                <Plus size={14} />
-                Add Option
-              </button>
-            </div>
-            {question.options?.map((option, optionIndex) => (
-              <div key={optionIndex} className="flex items-center gap-2">
-                <input
-                  type="text"
-                  value={option}
-                  onChange={(e) => onUpdateOption(optionIndex, e.target.value)}
-                  className={`flex-1 p-2 rounded-lg text-sm border ${
-                    isDark
-                      ? 'bg-black border-gray-700 text-white'
-                      : 'bg-white border-gray-300 text-gray-900'
-                  }`}
-                />
-                <button
-                  onClick={() => onDeleteOption(optionIndex)}
-                  className="p-1 text-red-500 hover:bg-red-500 hover:text-white rounded transition-colors"
-                >
-                  <Trash2 size={14} />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Numeric Range Configuration */}
-        {question.type === 'numeric-range' && (
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                Minimum
-              </label>
-              <input
-                type="number"
-                value={question.min || 0}
-                onChange={(e) => onUpdate({ min: parseInt(e.target.value) })}
-                className={`w-full p-2 rounded-lg text-sm border ${
-                  isDark
-                    ? 'bg-black border-gray-700 text-white'
-                    : 'bg-white border-gray-300 text-gray-900'
-                }`}
-              />
-            </div>
-            <div>
-              <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                Maximum
-              </label>
-              <input
-                type="number"
-                value={question.max || 100}
-                onChange={(e) => onUpdate({ max: parseInt(e.target.value) })}
-                className={`w-full p-2 rounded-lg text-sm border ${
-                  isDark
-                    ? 'bg-black border-gray-700 text-white'
-                    : 'bg-white border-gray-300 text-gray-900'
-                }`}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* Max Length for Text Questions */}
-        {(question.type === 'short-text' || question.type === 'long-text') && (
-          <div>
-            <label className={`block text-sm font-medium mb-1 ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Maximum Length
-            </label>
-            <input
-              type="number"
-              value={question.maxLength || (question.type === 'short-text' ? 100 : 1000)}
-              onChange={(e) => onUpdate({ maxLength: parseInt(e.target.value) })}
-              className={`w-full p-2 rounded-lg text-sm border ${
-                isDark
-                  ? 'bg-black border-gray-700 text-white'
-                  : 'bg-white border-gray-300 text-gray-900'
-              }`}
-            />
-          </div>
-        )}
-
-        {/* Conditional Logic */}
-        <div className="border-t pt-3 mt-3 border-gray-700">
-          <div className="flex justify-between items-center mb-2">
-            <span className={`text-sm font-medium ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-              Conditional Logic
-            </span>
-            <button
-              onClick={() => setShowConditional(!showConditional)}
-              className={`text-sm ${
-                isDark ? 'text-blue-400' : 'text-blue-600'
-              }`}
-            >
-              {showConditional ? 'Hide' : 'Add Conditional'}
-            </button>
-          </div>
-
-          {showConditional && (
-            <div className={`space-y-2 p-3 rounded-lg border ${
-              isDark ? 'bg-gray-900 border-gray-700' : 'bg-gray-100 border-gray-300'
-            }`}>
-              {question.conditional ? (
-                <div className="flex items-center justify-between">
-                  <span className={`text-sm ${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
-                    Show if {question.conditional.dependsOn} = "{question.conditional.condition}"
-                  </span>
-                  <button
-                    onClick={onRemoveConditional}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-2">
-                  <select
-                    onChange={(e) => {
-                      const dependsOn = e.target.value
-                      if (dependsOn) {
-                        onAddConditional(dependsOn, '')
-                      }
-                    }}
-                    className={`w-full p-2 rounded text-sm border ${
-                      isDark
-                        ? 'bg-black border-gray-700 text-white'
-                        : 'bg-white border-gray-300 text-gray-900'
-                    }`}
-                  >
-                    <option value="">Select question...</option>
-                    {allQuestions
-                      .filter(q => q.id !== question.id && (q.type === 'single-choice' || q.type === 'multi-choice'))
-                      .map(q => (
-                        <option key={q.id} value={q.id}>
-                          {q.question}
-                        </option>
-                      ))
-                    }
-                  </select>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-// Assessment Preview Component
-function AssessmentPreview({ assessment }: { assessment: Assessment }) {
-  const { isDark } = useTheme()
-  const [responses, setResponses] = useState<Record<string, any>>({})
-
-  const gradientText = isDark
-    ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text"
-    : "bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text"
-
-  const handleResponseChange = (questionId: string, value: any) => {
-    setResponses(prev => ({ ...prev, [questionId]: value }))
-  }
-
-  // Fixed conditional logic function
-  const shouldShowQuestion = (question: Question): boolean => {
-    if (!question.conditional) return true
-    
-    const { dependsOn, condition } = question.conditional
-    const dependentResponse = responses[dependsOn]
-    
-    // If no response yet, don't show conditional questions
-    if (dependentResponse === undefined || dependentResponse === null) return false
-    
-    if (Array.isArray(dependentResponse)) {
-      return dependentResponse.includes(condition)
-    }
-    
-    return dependentResponse === condition
-  }
-
-  return (
-    <div className="space-y-8">
-      <div className="text-center mb-8">
-        <h1 className={`text-3xl font-bold mb-2 ${gradientText}`}>
-          {assessment.title}
-        </h1>
-        {assessment.description && (
-          <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-            {assessment.description}
-          </p>
-        )}
-      </div>
-
-      {assessment.sections.map((section, sectionIndex) => (
-        <div key={section.id} className="space-y-4">
-          <div>
-            <h2 className={`text-xl font-semibold mb-2 ${gradientText}`}>
-              {section.title}
-            </h2>
-            {section.description && (
-              <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-                {section.description}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-4">
-            {section.questions.map((question, questionIndex) => (
-              <div 
-                key={question.id} 
-                className={`p-4 rounded-lg border transition-all ${
-                  shouldShowQuestion(question) 
-                    ? (isDark ? 'bg-black border-gray-800' : 'bg-white border-gray-200') 
-                    : 'opacity-50 pointer-events-none bg-gray-400 dark:bg-gray-800'
-                }`}
-              >
-                <div className="flex items-start gap-3 mb-2">
-                  <span className={`shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-xs font-medium ${
-                    isDark ? 'bg-gray-800 text-gray-300' : 'bg-gray-200 text-gray-700'
-                  }`}>
-                    {sectionIndex + 1}.{questionIndex + 1}
-                  </span>
-                  <label className="block text-sm font-medium flex-1">
-                    <span className={isDark ? 'text-white' : 'text-gray-900'}>
-                      {question.question}
-                    </span>
-                    {question.required && <span className="text-red-500 ml-1">*</span>}
-                  </label>
-                </div>
-                
-                {question.description && (
-                  <p className={`text-sm mb-3 ml-9 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
-                    {question.description}
-                  </p>
-                )}
-
-                {shouldShowQuestion(question) && (
-                  <div className="ml-9">
-                    <QuestionInput
-                      question={question}
-                      value={responses[question.id]}
-                      onChange={(value) => handleResponseChange(question.id, value)}
-                      isDark={isDark}
-                    />
-                  </div>
-                )}
-                
-                {!shouldShowQuestion(question) && (
-                  <div className="ml-9">
-                    <p className={`text-sm italic ${isDark ? 'text-gray-500' : 'text-gray-400'}`}>
-                      This question is hidden based on previous answers
-                    </p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-
-      {/* Submit Button */}
-      <div className="flex justify-center pt-6">
-        <button
-          onClick={() => {
-            // Validate required questions that are visible
-            const requiredQuestions = assessment.sections.flatMap(section =>
-              section.questions.filter(q => q.required && shouldShowQuestion(q))
-            )
-            
-            const missingRequired = requiredQuestions.filter(q => {
-              const response = responses[q.id]
-              return !response || 
-                    (Array.isArray(response) && response.length === 0) ||
-                    (typeof response === 'string' && response.trim() === '')
-            })
-            
-            if (missingRequired.length > 0) {
-              alert(`Please complete ${missingRequired.length} required question(s)`)
-              return
-            }
-            
-            // Save responses locally
-            assessmentService.saveDraftResponse(assessment.id, 'current-user', responses)
-            alert('Assessment submitted successfully!')
-          }}
-          className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-semibold"
-        >
-          Submit Assessment
-        </button>
-      </div>
-    </div>
-  )
-}
-
-
-export default AssessmentBuilder;
+export default AssessmentBuilder

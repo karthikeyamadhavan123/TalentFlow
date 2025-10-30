@@ -29,7 +29,7 @@ function App() {
           <Route path="/jobs/archive" element={<Protected Component={<ArchivedJobs />} />} />
           <Route path="/candidates" element={<Protected Component={<Candidates />} />} />
           <Route path="/candidate/:id" element={<Protected Component={<CandidateDetail />} />} />
-          <Route path="/assessment/builder/:id" element={<AssessmentBuilder jobId=":id" />} />
+          <Route path="/assessment/builder/:id" element={<AssessmentBuilder />} />
           <Route path="/assessment/responses/:id" element={<AssessmentResponses />} />
         </Routes>
       </Suspense>
