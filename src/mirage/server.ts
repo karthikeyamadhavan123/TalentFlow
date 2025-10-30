@@ -1070,7 +1070,6 @@ export function makeServer({ environment = 'development' } = {}) {
                     return new Response(500, {}, { error: 'Failed to fetch candidate responses' });
                 }
             });
-            this.passthrough();
         }
         
     });

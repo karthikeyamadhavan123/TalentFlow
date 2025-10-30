@@ -8,7 +8,6 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 const queryClient = new QueryClient()
 
 async function setupMirage() {
-  if (import.meta.env.DEV || import.meta.env.MODE === 'production')  {
     try {
       const { makeServer } = await import('./mirage/server')
       makeServer({ environment: 'development' })
@@ -16,7 +15,7 @@ async function setupMirage() {
     } catch (err) {
       console.error('❌ Mirage failed:', err)
     }
-  }
+
 }
 setupMirage().finally(() => {
   createRoot(document.getElementById('root')!).render(
