@@ -20,7 +20,7 @@ export function makeServer({ environment = 'development' } = {}) {
             this.timing = 200; // this is the latency for all the requests between (200–1200ms)
 
             // GET /api/jobs - Get jobs with filtering, pagination, and sorting
-            this.get('/jobs', async (schema, request) => {
+            this.get('/jobs', async (_schema, request) => {
                 try {
                     const allJobs = await db.jobs.toArray();
 
@@ -101,7 +101,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
 
             // GET /api/jobs/search - Search jobs (for modal - simplified)
-            this.get('/jobs/search', async (schema, request) => {
+            this.get('/jobs/search', async (_schema, request) => {
                 try {
                     const qParam = Array.isArray(request.queryParams.q) ? request.queryParams.q[0] : request.queryParams.q;
                     const allJobs = await db.jobs.toArray();
@@ -138,7 +138,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // GET /api/jobs/:id - Get specific job by ID
-            this.get('/jobs/:id', async (schema, request) => {
+            this.get('/jobs/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
 
@@ -164,7 +164,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // POST /api/jobs - Create new job
-            this.post('/jobs', async (schema, request) => {
+            this.post('/jobs', async (_schema, request) => {
                 try {
                     const attrs = JSON.parse(request.requestBody) as CreateJobData;
 
@@ -208,7 +208,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // In your makeServer() function, add this route:
-            this.patch('/jobs/:id/reorder', async (schema, request) => {
+            this.patch('/jobs/:id/reorder', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const { fromOrder, toOrder } = JSON.parse(request.requestBody);
@@ -263,7 +263,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // PUT /api/jobs/:id - Update job
-            this.put('/jobs/:id', async (schema, request) => {
+            this.put('/jobs/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const attrs = JSON.parse(request.requestBody) as UpdateJobData;
@@ -296,7 +296,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.patch('/jobs/:id/archive', async (schema, request) => {
+            this.patch('/jobs/:id/archive', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const existingJob = await db.jobs.get(id);
@@ -322,7 +322,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Also add the unarchive endpoint
-            this.patch('/jobs/:id/unarchive', async (schema, request) => {
+            this.patch('/jobs/:id/unarchive', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const existingJob = await db.jobs.get(id);
@@ -348,7 +348,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // DELETE /api/jobs/:id - Delete job
-            this.delete('/jobs/:id', async (schema, request) => {
+            this.delete('/jobs/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
 
@@ -387,7 +387,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
             // GET /api/jobs/search - Search jobs (for modal - simplified)
-            this.get('/jobs/archive', async (schema) => {
+            this.get('/jobs/archive', async (_schema) => {
                 try {
                     const allJobs = await db.jobs.toArray();
                     const filteredJobs = allJobs.filter((job) => job.status !== 'active');
@@ -397,7 +397,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.get('/candidates', async (schema, request) => {
+            this.get('/candidates', async (_schema, request) => {
                 try {
                     const allCandidates = await db.candidates.toArray();
 
@@ -493,7 +493,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Get candidate by ID
-            this.get('/candidates/:id', async (schema, request) => {
+            this.get('/candidates/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const candidate = await db.candidates.where('id').equals(id).first();
@@ -509,7 +509,7 @@ export function makeServer({ environment = 'development' } = {}) {
 
             // Update candidate stage
             // In your MirageJS route for PATCH /candidates/:id/stage
-            this.patch('/candidates/:id/stage', async (schema, request) => {
+            this.patch('/candidates/:id/stage', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const { stage } = JSON.parse(request.requestBody);
@@ -550,7 +550,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Get candidate statistics
-            this.get('/candidates/stats', async (schema, request) => {
+            this.get('/candidates/stats', async (_schema, request) => {
                 try {
                     const allCandidates = await db.candidates.toArray();
                     const jobId = request.queryParams.jobId;
@@ -581,7 +581,7 @@ export function makeServer({ environment = 'development' } = {}) {
                     return new Response(500, {}, { error: 'Failed to fetch candidate stats' });
                 }
             });
-            this.get('/candidates', async (schema, request) => {
+            this.get('/candidates', async (_schema, request) => {
                 try {
                     const allCandidates = await db.candidates.toArray();
 
@@ -677,7 +677,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Get candidate by ID
-            this.get('/candidates/:id', async (schema, request) => {
+            this.get('/candidates/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const candidate = await db.candidates.where('id').equals(id).first();
@@ -693,7 +693,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Update candidate stage
-            this.patch('/candidates/:id/stage', async (schema, request) => {
+            this.patch('/candidates/:id/stage', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const { stage } = JSON.parse(request.requestBody);
@@ -718,7 +718,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // Get candidate statistics
-            this.get('/candidates/stats', async (schema, request) => {
+            this.get('/candidates/stats', async (_schema, request) => {
                 try {
                     const allCandidates = await db.candidates.toArray();
                     const jobId = request.queryParams.jobId;
@@ -750,7 +750,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.get('/assessments', async (schema, request) => {
+            this.get('/assessments', async (_schema, request) => {
                 try {
                     const allAssessments = await db.assessments.toArray();
 
@@ -800,7 +800,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.get('/assessments/:id', async (schema, request) => {
+            this.get('/assessments/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const assessment = await db.assessments.get(id);
@@ -815,7 +815,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.get('/assessments/job/:jobId', async (schema, request) => {
+            this.get('/assessments/job/:jobId', async (_schema, request) => {
                 try {
                     const { jobId } = request.params;
                     const assessment = await db.assessments
@@ -833,7 +833,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.post('/assessments', async (schema, request) => {
+            this.post('/assessments', async (_schema, request) => {
                 try {
                     const attrs = JSON.parse(request.requestBody) as Omit<Assessment, 'id' | 'createdAt' | 'updatedAt'>;
 
@@ -867,7 +867,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.put('/assessments/:id', async (schema, request) => {
+            this.put('/assessments/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
                     const attrs = JSON.parse(request.requestBody) as Partial<Assessment>;
@@ -892,7 +892,7 @@ export function makeServer({ environment = 'development' } = {}) {
                 }
             });
 
-            this.delete('/assessments/:id', async (schema, request) => {
+            this.delete('/assessments/:id', async (_schema, request) => {
                 try {
                     const { id } = request.params;
 
@@ -922,7 +922,7 @@ export function makeServer({ environment = 'development' } = {}) {
             // CANDIDATE RESPONSE ROUTES
 
             // POST /api/assessments/:assessmentId/responses - Submit candidate response
-            this.post('/assessments/:assessmentId/responses', async (schema, request) => {
+            this.post('/assessments/:assessmentId/responses', async (_schema, request) => {
                 try {
                     const { assessmentId } = request.params;
                     const attrs = JSON.parse(request.requestBody) as Omit<CandidateResponse, 'id' | 'submittedAt'>;
@@ -968,7 +968,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // GET /api/assessments/:assessmentId/responses - Get all responses for an assessment
-            this.get('/assessments/:assessmentId/responses', async (schema, request) => {
+            this.get('/assessments/:assessmentId/responses', async (_schema, request) => {
                 try {
                     const { assessmentId } = request.params;
 
@@ -1003,7 +1003,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // GET /api/assessments/:assessmentId/responses/:candidateId - Get specific candidate response
-            this.get('/assessments/:assessmentId/responses/:candidateId', async (schema, request) => {
+            this.get('/assessments/:assessmentId/responses/:candidateId', async (_schema, request) => {
                 try {
                     const { assessmentId, candidateId } = request.params;
 
@@ -1039,7 +1039,7 @@ export function makeServer({ environment = 'development' } = {}) {
             });
 
             // GET /api/candidates/:candidateId/responses - Get all responses for a candidate
-            this.get('/candidates/:candidateId/responses', async (schema, request) => {
+            this.get('/candidates/:candidateId/responses', async (_schema, request) => {
                 try {
                     const { candidateId } = request.params;
 

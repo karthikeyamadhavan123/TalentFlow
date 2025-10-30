@@ -51,7 +51,7 @@ export function useUpdateCandidateStage() {
   return useMutation({
     mutationFn: ({ id, stage }: { id: string; stage: 'applied' | 'screening' | 'interview' | 'technical' | 'offer' | 'hired' | 'rejected' }) =>
       candidateService.updateCandidateStage(id, stage),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['candidates'] })
       queryClient.invalidateQueries({ queryKey: ['candidateStats'] })
       queryClient.invalidateQueries({ queryKey: ['candidate', variables.id] })
@@ -67,7 +67,7 @@ export function useUpdateCandidate() {
   return useMutation({
     mutationFn: ({ id, data }: { id: string; data: Partial<CandidateProps> }) =>
       candidateService.updateCandidate(id, data),
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['candidates'] })
       queryClient.invalidateQueries({ queryKey: ['candidate', variables.id] })
     },

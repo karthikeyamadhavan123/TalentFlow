@@ -16,8 +16,6 @@ import {
 import { SortableJobCard } from './SortableJobCard'
 import type {JobsGridProps } from '@/types'
 
-
-
 export function JobsGrid({
     jobs,
     isDark,
