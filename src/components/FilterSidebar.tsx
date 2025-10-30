@@ -2,8 +2,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Filter, X } from 'lucide-react'
 import type { FilterSidebarProps } from '@/types'
 
-
-
 function FilterSidebar({
   isOpen,
   onClose,
