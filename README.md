@@ -137,6 +137,7 @@ App runs at:
 Use the following credentials to sign in:
 
 ```
+Jyust navigate to the login page and use these credentials no need sign up
 email:    sarah.johnson@techcorp.com
 password: hr123
 ```
