@@ -44,16 +44,7 @@ function Candidates() {
 
   const handleSearchChange = useCallback((value: string) => {
     setSearchQuery(value)
-
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current)
-    }
-
-    searchTimeoutRef.current = setTimeout(() => {
-      setFilters(prev => ({ ...prev, search: value }))
-    }, 500)
   }, [])
-
 
   useEffect(() => {
     return () => {
@@ -63,15 +54,28 @@ function Candidates() {
     }
   }, [])
 
-  const allCandidates = useMemo(() => {
+  const allCandidatesFromAPI = useMemo(() => {
     return data?.pages.flatMap(page => page.candidates) || []
   }, [data?.pages])
+
+  // Client-side search only for name and email
+  const filteredCandidates = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return allCandidatesFromAPI
+    }
+
+    const query = searchQuery.toLowerCase().trim()
+    return allCandidatesFromAPI.filter(candidate =>
+      candidate.firstName.toLowerCase().includes(query) ||
+      candidate.lastName.toLowerCase().includes(query) ||
+      candidate.email.toLowerCase().includes(query)
+    )
+  }, [allCandidatesFromAPI, searchQuery])
 
   const totalCount = data?.pages[0]?.totalCount || 0
 
   const lastCandidateRef = useCallback(
     (node: HTMLDivElement | null) => {
-
       if (observerRef.current) {
         observerRef.current.disconnect()
       }
@@ -109,7 +113,7 @@ function Candidates() {
     ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text"
     : "bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text"
 
-  if (isLoading && !allCandidates.length) return <LoadingAnimation />
+  if (isLoading && !allCandidatesFromAPI.length) return <LoadingAnimation />
   if (isError) return <div className="text-center text-red-500 mt-10">Error: {error?.message}</div>
 
   return (
@@ -155,7 +159,7 @@ function Candidates() {
           className={`flex flex-col sm:flex-row gap-4 mb-8 p-6 rounded-2xl ${isDark ? 'bg-gray-800/60' : 'bg-white/80'
             }`}
         >
-          {/* Search */}
+          {/* Search - Client-side only */}
           <div className="flex-1 relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
             <input
@@ -170,7 +174,7 @@ function Candidates() {
             />
           </div>
 
-          {/* Stage Filter */}
+          {/* Stage Filter - Server-side */}
           <select
             value={filters.stage}
             onChange={(e) => setFilters(prev => ({ ...prev, stage: e.target.value }))}
@@ -186,7 +190,7 @@ function Candidates() {
             ))}
           </select>
 
-          {/* Sort */}
+          {/* Sort - Server-side */}
           <select
             value={filters.sort}
             onChange={(e) => setFilters(prev => ({ ...prev, sort: e.target.value }))}
@@ -207,14 +211,15 @@ function Candidates() {
         {/* Results Count */}
         <div className="text-center mb-6">
           <p className={isDark ? 'text-gray-400' : 'text-gray-600'}>
-            Showing {allCandidates.length} of {totalCount} candidates
+            Showing {filteredCandidates.length} of {searchQuery ? filteredCandidates.length : totalCount} candidates
+            {searchQuery && ' (filtered by search)'}
           </p>
         </div>
 
         {/* Candidates Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {allCandidates.map((candidate, index) => {
-            const isLastCandidate = index === allCandidates.length - 1
+          {filteredCandidates.map((candidate, index) => {
+            const isLastCandidate = index === filteredCandidates.length - 1
             
             return (
               <motion.div
@@ -316,8 +321,8 @@ function Candidates() {
           })}
         </div>
 
-        {/* Loading Indicator - Always visible when fetching next page */}
-        {isFetchingNextPage && (
+        {/* Loading Indicator - Only show when fetching next page AND not searching */}
+        {isFetchingNextPage && !searchQuery && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -332,7 +337,7 @@ function Candidates() {
         )}
 
         {/* End of list message */}
-        {!hasNextPage && allCandidates.length > 0 && (
+        {!hasNextPage && filteredCandidates.length > 0 && !searchQuery && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -345,7 +350,7 @@ function Candidates() {
         )}
 
         {/* No Candidates */}
-        {allCandidates.length === 0 && !isLoading && (
+        {filteredCandidates.length === 0 && !isLoading && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
