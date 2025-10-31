@@ -1,6 +1,6 @@
 import type { Question } from "@/types"
 
-// Question Input Component
+// Fixed QuestionInput Component with proper styling
 function QuestionInput({ 
   question, 
   value, 
@@ -12,15 +12,9 @@ function QuestionInput({
   onChange: (value: any) => void
   isDark: boolean
 }) {
-  const inputBaseClasses = `w-full p-3 rounded-lg border ${
-    isDark 
-      ? 'bg-black border-gray-700 text-white' 
-      : 'bg-white border-gray-300 text-gray-900'
+  const inputBaseClasses = `w-full p-3 rounded-lg border bg-white dark:bg-gray-700 text-gray-900 dark:text-white ${
+    isDark ? 'border-gray-600' : 'border-gray-300'
   }`
-  
-  const gradientText = isDark
-    ? "bg-gradient-to-r from-cyan-400 to-blue-500 text-transparent bg-clip-text"
-    : "bg-gradient-to-r from-purple-600 to-pink-600 text-transparent bg-clip-text"
   
   const errorClasses = 'border-red-500 dark:border-red-400'
 
@@ -38,7 +32,7 @@ function QuestionInput({
                 onChange={(e) => onChange(e.target.value)}
                 className="text-blue-500 focus:ring-blue-500"
               />
-              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+              <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 {option}
               </span>
             </label>
@@ -65,7 +59,7 @@ function QuestionInput({
                 }}
                 className="text-blue-500 rounded focus:ring-blue-500"
               />
-              <span className={isDark ? 'text-gray-300' : 'text-gray-700'}>
+              <span className={`${isDark ? 'text-gray-300' : 'text-gray-700'}`}>
                 {option}
               </span>
             </label>
@@ -141,15 +135,15 @@ function QuestionInput({
             type="file"
             onChange={(e) => onChange(e.target.files?.[0])}
             className={`w-full p-2 rounded-lg border ${
-              isDark ? 'border-gray-700 bg-black' : 'border-gray-300 bg-white'
+              isDark ? 'border-gray-600 bg-gray-700' : 'border-gray-300 bg-white'
             } file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold ${
               isDark 
-                ? 'file:bg-gray-800 file:text-white' 
+                ? 'file:bg-gray-600 file:text-white' 
                 : 'file:bg-gray-50 file:text-gray-700'
             }`}
           />
           {value && (
-            <p className={`text-sm ${gradientText}`}>
+            <p className={`text-sm ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
               Selected: {value.name}
             </p>
           )}
@@ -160,4 +154,5 @@ function QuestionInput({
       return null
   }
 }
+
 export default QuestionInput;
