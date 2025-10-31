@@ -2,7 +2,7 @@ import { Suspense, lazy } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Protected from "./auth/Protected";
 import LoadingAnimation from "./components/Animations/LoadingAnimation";
-
+import { Toaster } from "react-hot-toast";
 const Home = lazy(() => import("./pages/home/Home"));
 const Signup = lazy(() => import("./forms/SignUp"));
 const Login = lazy(() => import("./forms/Login"));
@@ -33,6 +33,9 @@ function App() {
           <Route path="/assessment/responses/:id" element={<AssessmentResponses />} />
         </Routes>
       </Suspense>
+      <Toaster
+        position="top-right"
+        />
     </BrowserRouter>
   );
 }

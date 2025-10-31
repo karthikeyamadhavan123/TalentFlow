@@ -119,6 +119,11 @@ const hrNavItems = [
     url: "/candidates",
     icon: Users,
   },
+  {
+    title: "Home",
+    url: "/",
+    icon: Home,
+  },
 ];
 
 export default hrNavItems;

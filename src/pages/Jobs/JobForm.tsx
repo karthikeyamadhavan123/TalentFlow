@@ -1,16 +1,9 @@
 import { motion } from 'framer-motion'
 import { X, Plus, Minus } from 'lucide-react'
 import { useState, useEffect } from 'react'
-import type { JobProps, CreateJobData, UpdateJobData } from '@/types'
+import type { JobFormProps } from '@/types'
+import toast from 'react-hot-toast'
 
-interface JobFormProps {
-  isOpen: boolean
-  onClose: () => void
-  onSave: (jobData: CreateJobData | UpdateJobData) => Promise<void>
-  isDark: boolean
-  job?: JobProps | null
-  mode: 'create' | 'edit'
-}
 
 function JobForm({ isOpen, onClose, onSave, isDark, job, mode }: JobFormProps) {
   const [formData, setFormData] = useState({
@@ -130,9 +123,11 @@ function JobForm({ isOpen, onClose, onSave, isDark, job, mode }: JobFormProps) {
       }
 
       await onSave(jobData)
+      toast.success(`Job ${mode === 'create' ? 'created' : 'updated'} successfully`)
       onClose()
     } catch (error) {
       console.error('Failed to save job:', error)
+      toast.error('Failed to save job. Please try again.')
       setErrors({ submit: 'Failed to save job. Please try again.' })
     } finally {
       setLoading(false)

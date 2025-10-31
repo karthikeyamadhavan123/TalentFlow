@@ -242,3 +242,12 @@ export interface SortableJobCardProps {
     handleArchive: (id: string) => void
     selectedJob: JobProps | null
 }
+
+export interface JobFormProps {
+  isOpen: boolean
+  onClose: () => void
+  onSave: (jobData: CreateJobData | UpdateJobData) => Promise<void>
+  isDark: boolean
+  job?: JobProps | null
+  mode: 'create' | 'edit'
+}
